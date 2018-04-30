@@ -1,0 +1,136 @@
+html, body {
+	margin:0;
+	padding:0;
+	height:100%;
+	font-family:"Roboto";
+}
+
+.login_container {
+	position:absolute;
+	left:0;top:0;
+	right:0;bottom:0;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	opacity:0;
+	transform:scale(0);
+	transition:opacity 0.5s, transform 0.5s;
+}
+
+[data-not_logged_in] .login_container {
+	transform:scale(1);
+	opacity:1;
+}
+
+.data_container {
+	margin-top:50px;
+	display:flex;
+	align-items:top;
+	justify-content:center;
+	opacity:0;
+	transition:opacity 0.5s;
+}
+
+[data-logged_in] .data_container {
+	opacity:1;
+}
+
+.menu_container {
+	position:fixed;
+	right:50px;
+	top:50px;
+	opacity:0;
+	transition:opacity 0.5s;
+}
+
+[data-logged_in] .menu_container {
+	opacity:1;
+}
+
+/*	logout form 	*/
+.logout_form {
+
+}
+
+.logout_form button {
+	width:100%;
+}
+
+.logout_form > * {
+	margin:5px;
+}
+
+/*	change password form */
+
+.change_password_form {
+	height:0px;
+	overflow:hidden;
+	opacity:0;
+	transition:height 0.5s, opacity 0.5s;
+}
+
+[data-change_password_enabled] .change_password_form {
+	height:145px;
+	opacity:1;
+}
+
+.change_password_form button {
+	width:100%;
+}
+
+.change_password_form > * {
+	margin:5px;
+}
+
+/*	download box */
+
+.download_box {
+	display:flex;
+	flex-direction:column;
+}
+
+.download_box > * {
+	margin-bottom:5px;
+}
+
+
+/*	data table */
+
+.sort_bar {
+	display:flex;
+	cursor:pointer;
+	margin-left:5px;
+	margin-right:5px;
+}
+
+.sort_asc_button, .sort_des_button {
+	font-family:arial;
+	font-size:12px;
+	margin-top:3px;
+}
+
+[data-hide] {
+	display:none;
+}
+
+td {
+	padding:4px;
+}
+
+th {
+	padding:4px;
+	background-color:rgba(0, 100, 255, 0.1);
+}
+
+th:nth-child(even) {
+	background-color:rgba(200, 200, 0, 0.1);
+}
+
+.th_content {
+	display:flex;
+	align-items:center;
+	justify-content:center;
+}
+
+
+

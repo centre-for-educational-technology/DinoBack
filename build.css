@@ -1,0 +1,93 @@
+@font-face {
+  font-family: 'password';
+  src: url('password.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/*	input	*/
+[data-build="input"] {
+	display:flex;
+}
+
+[data-build="input"] > label {
+	margin-right:5px;
+}
+
+[data-build="input"] > div {
+	text-align:center;
+	min-width:100px;
+	border-bottom:1px solid black;
+	box-sizing:border-box;
+	outline:none;
+}
+
+[data-build="input"][data-hover] > div, [data-build="input"][data-focus] > div {
+	box-shadow:0 2px 2px -2px rgba(0,0,0,0.3);
+}
+
+/*	checkbox	*/
+[data-build="checkbox"] {
+	display:flex;
+}
+
+[data-build="checkbox"] > label {
+	margin-right:5px;
+}
+
+[data-build="checkbox"] > input {
+	outline:none;
+}
+
+[data-build="checkbox"][data-hover] > input, [data-build="checkbox"][data-focus] > div {
+	box-shadow:0 2px 2px -2px rgba(0,0,0,0.3);
+}
+
+/*	dropdown	*/
+[data-build="dropdown"] {
+	display:flex;
+}
+
+[data-build="dropdown"] > label {
+	margin-right:5px;
+}
+
+[data-build="dropdown"] > select {
+	min-width:100px;
+	outline:none;
+}
+
+[data-build="dropdown"][data-hover] > select, [data-build="dropdown"][data-focus] > div {
+	box-shadow:0 2px 2px -2px rgba(0,0,0,0.3);
+}
+
+/*	radio	*/
+[data-build="radio"] {
+	display:flex;
+}
+
+[data-build="radio"] > label {
+	margin-right:5px;
+}
+
+[data-build="radio"] > div > label > input {
+	outline:none;
+}
+
+[data-build="radio"] > div > label {
+	vertical-align:top;
+}
+
+/*	message	*/
+[data-build="message"] {
+	opacity:0;
+	max-height:0;
+	white-space:nowrap;
+	transition:opacity 0.3s, max-height 0.3s;
+}
+
+[data-build="message"][data-show_message] {
+	opacity:1;
+	max-height:50px;
+}
