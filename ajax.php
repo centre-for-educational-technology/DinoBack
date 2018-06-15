@@ -24,6 +24,8 @@
 		new_session();
 	}
 
+	$chunk_max_size = 524288;
+
 	$ret = ["result" => "error_no_method"];
 	if (isset($_GET["method"])) {
 		$args = json_decode(file_get_contents("php://input"));
@@ -108,25 +110,85 @@
 				if ($_SESSION["user"]["is_guest"]) die("nope");
 
 				$qr = $dbi->select("data", NULL, ["id", "JSON"]);
-				$ret["result"] = "success";
-				$ret["data"] = [];
 
+				//	make chunks
+				$chunks = [];
+				$current_chunk = [];
+				$current_chunk_size = 0;
 				for ($i = 0; $i < count($qr); $i++) {
 					$item = $qr[$i];
-					if (in_array($item["id"], $args)) $ret["data"] []= $item["JSON"];
+					$data = $item["JSON"];
+					$data_len = mb_strlen($data);
+					if ($data_len > $chunk_max_size) die("single item exceeding chunk limit");
+
+					if (in_array($item["id"], $args)) {
+						if ($current_chunk_size + $data_len > $chunk_max_size) {
+							$chunks []= $current_chunk;
+							$current_chunk = [];
+							$current_chunk_size = 0;
+						} else {
+							$current_chunk []= $data;
+							$current_chunk_size += $data_len;
+						}
+					}
 				}
+				$chunks []= $current_chunk;
+
+				//	prep chunks
+				$_SESSION["chunk_cache"] = $chunks;
+				$_SESSION["chunk_idx"] = 0;
+
+				//	send
+				$ret["data"] = $_SESSION["chunk_cache"][$_SESSION["chunk_idx"]++];
+				if ($_SESSION["chunk_idx"] == count($_SESSION["chunk_cache"])) $ret["result"] = "success"; else $ret["result"] = "multi_chunk_start";
+
 				break;
 			case "download_CSV":
 				if ($_SESSION["user"]["is_guest"]) die("nope");
 
 				$qr = $dbi->select("data", NULL, ["id", "CSV"]);
-				$ret["result"] = "success";
-				$ret["data"] = [];
 
+				//	make chunks
+				$chunks = [];
+				$current_chunk = [];
+				$current_chunk_size = 0;
 				for ($i = 0; $i < count($qr); $i++) {
 					$item = $qr[$i];
-					if (in_array($item["id"], $args)) $ret["data"] []= $item["CSV"];
+					$data = $item["CSV"];
+					$data_len = mb_strlen($data);
+					if ($data_len > $chunk_max_size) die("single item exceeding chunk limit");
+
+					if (in_array($item["id"], $args)) {
+						if ($current_chunk_size + $data_len > $chunk_max_size) {
+							$chunks []= $current_chunk;
+							$current_chunk = [];
+							$current_chunk_size = 0;
+						} else {
+							$current_chunk []= $data;
+							$current_chunk_size += $data_len;
+						}
+					}
 				}
+				$chunks []= $current_chunk;
+
+				//	prep chunks
+				$_SESSION["chunk_cache"] = $chunks;
+				$_SESSION["chunk_idx"] = 0;
+
+				//	send
+				$ret["data"] = $_SESSION["chunk_cache"][$_SESSION["chunk_idx"]++];
+				if ($_SESSION["chunk_idx"] == count($_SESSION["chunk_cache"])) $ret["result"] = "success"; else $ret["result"] = "multi_chunk_start";
+
+				break;
+			case "continue":
+				if ($_SESSION["user"]["is_guest"]) die("nope");
+
+				if (!array_key_exists("chunk_cache", $_SESSION)) die("chunk cache doesn't exist");
+				if ($_SESSION["chunk_idx"] == count($_SESSION["chunk_cache"])) die("chunk cache exhausted");
+
+				$ret["data"] = $_SESSION["chunk_cache"][$_SESSION["chunk_idx"]++];
+				if ($_SESSION["chunk_idx"] == count($_SESSION["chunk_cache"])) $ret["result"] = "multi_chunk_success"; else $ret["result"] = "multi_chunk_continued";
+
 				break;
 		}
 	}

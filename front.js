@@ -140,6 +140,24 @@ function ajax(method, obj, callback_success, callback_error, timeout_ms) {
 					obj = obj.arg;
 				}
 				safecall(callback_success, obj);
+			} else if (obj.result == "multi_chunk_start") {
+				var data = obj.data;
+				var collect_func = function(cont) {
+					data = data.concat(cont.data);
+					if (cont.result == "multi_chunk_success") {
+						obj.data = data;
+						safecall(callback_success, obj);
+					} else {
+						ajax("continue", undefined, collect_func, function(){console.log("multi chunk failure");}, 1000);
+					}
+				};
+
+				ajax("continue", undefined, collect_func, function(){console.log("multi chunk failure");}, 1000);
+			} else if (obj.result == "multi_chunk_continued") {
+				callback_success(obj);
+
+			} else if (obj.result == "multi_chunk_success") {
+				callback_success(obj);
 			} else {
 				safecall(callback_error, obj);
 			}
