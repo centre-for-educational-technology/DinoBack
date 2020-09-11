@@ -99,7 +99,7 @@ function add_table_sorters(th) {
 
 function timestamp_to_date(ts) {
 	var d = new Date(ts * 1000);
-	var s = fpad0(d.getHours(), 2) + ":" + fpad0(d.getMinutes(), 2) + ":" + fpad0(d.getSeconds(), 2) + " " + fpad0(d.getDate(), 2) + "." + fpad0(d.getMonth(), 2) + "." + fpad0(d.getFullYear(), 4);
+	var s = fpad0(d.getHours(), 2) + ":" + fpad0(d.getMinutes(), 2) + ":" + fpad0(d.getSeconds(), 2) + " " + fpad0(d.getDate(), 2) + "." + fpad0(d.getMonth() + 1, 2) + "." + fpad0(d.getFullYear(), 4);
 	return s;
 }
 
